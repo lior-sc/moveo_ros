@@ -1,0 +1,12 @@
+<launch>
+
+    <!-- This section launches the rosserial arduino node -->
+    <node   name="arduino_rosserial_node"      pkg="rosserial_arduino"     type="serial_node.py"    output="screen">
+        <param  name="port"             type="string"               value="/dev/ttyACM0"/>
+        <param  name="baud"             type="int"                  value="57600"/>
+    </node>
+
+    <node name="CustomMsg_publisher"   pkg="soltrex_poc_ros"   type = "Arduino_JointState_publisher.py"   output="screen">
+    </node>
+
+</launch>
