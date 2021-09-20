@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import numpy as np
 import sympy as sp
@@ -71,10 +71,6 @@ class RRRR_manipulator:
         t=[t1, t2, t3, t4]
         return t
     
-    def set_joint_position_rad(self,t):
-        self.JPOS = t
-        return
-    
     def set_joint_position_deg(self, t):
         self.JPOS=np.deg2rad(t)
         return
@@ -95,7 +91,6 @@ class RRRR_manipulator:
             rospy.logerr("movement not executed")
         else:
             t=[t1, t2, t3, t4]
-            self.set_joint_position_rad(t)
         return
 
     def set_cartesian_position(self, p):
@@ -114,28 +109,44 @@ class RRRR_manipulator:
             rospy.logerr("movement not executed")
         else:
             t=[t1, t2, t3, t4]
-            self.set_joint_position_rad(t)
         return t 
 
 
 link_lengths = [232.5, 235.0, 230.0, 40.0]
 robot=RRRR_manipulator(link_lengths)
 
+pub = rospy.Publisher('/FML_msg',soltrex_manipulator_msg,queue_size=1)
+pub_data=soltrex_manipulator_msg()
+rospy.init_node('Arduino_JointState_publisher',log_level=rospy.INFO)
+rate=rospy.Rate(40)
+
 def publisher_main_function():
-    pub = rospy.Publisher('//PC_custom_msg',soltrex_manipulator_msg,queue_size=1)
-    pub_data=soltrex_manipulator_msg()
-    rospy.init_node('Arduino_JointState_publisher',log_level=rospy.INFO)
-    rate=rospy.Rate(0.2)
+
+    
+    
     rospy.loginfo("sweep loop starting to run")
 
     while not rospy.is_shutdown():
-        positions=np.array([
-            [300,0,300,np.deg2rad(-55)],
-            [350,0,300,np.deg2rad(-55)],
-            [400,0,300,np.deg2rad(-55)],
-            [350,0,300,np.deg2rad(-55)],
-            ])
-        for i in range(0,4):
+        positions=np.zeros([222,4])
+
+        p=np.array([300,0,300,np.deg2rad(-55)])
+        dp=np.array([1,-1,0,0])
+
+        for i in range(1,101):
+            p=p+dp
+            positions[i,:]=p
+        
+        for i in range(51,55):
+            positions[i,:]=p
+        
+        for i in range(101,215):
+            p=p-dp
+            positions[i,:]=p
+        
+        for i in range(215,222):
+            positions[i,:]=p
+
+        for i in range(0,222):
             t = robot.set_cartesian_position(positions[i,0:4])
             pub_data.joint_RPOS=[t[0], t[1], t[2], 0, t[3]]
             pub.publish(pub_data)

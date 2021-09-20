@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 from soltrex_poc_ros.msg import soltrex_manipulator_msg
 
 rospy.init_node('Arduino_JointState_publisher')
-pub=rospy.Publisher('/PC_custom_msg',soltrex_manipulator_msg,queue_size=1)
+pub=rospy.Publisher('/FML_msg',soltrex_manipulator_msg,queue_size=1)
 rate=rospy.Rate(0.25)
 pub_data=soltrex_manipulator_msg()
 # pub_data.joint_RPOS=[0.33, 0.33, 0.33, 0.25, 0.25]
