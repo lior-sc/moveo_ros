@@ -4,6 +4,7 @@ import numpy as np
 import sympy as sp
 
 import rospy
+from rospy.core import rospyinfo
 from soltrex_poc_ros.msg import soltrex_manipulator_msg
 from geometry_msgs.msg import Twist
 
@@ -110,42 +111,37 @@ class RRRR_manipulator:
             t=[t1, t2, t3, t4]
         return t 
 
-link_lengths = [232.5, 235.0, 230.0, 40.0]
-robot=RRRR_manipulator(link_lengths)
+class cmd_vel_sub:
+    def __init__(self,p0,C_pos,C_angle):
+        self.p=p0
+        self.c1=C_pos
+        self.c2=C_angle
 
+        self.pub = rospy.Publisher('/FML_msg',soltrex_manipulator_msg,queue_size=1)
+        #self.rate = rospy.Rate(50)
 
-pub = rospy.Publisher('/FML_msg',soltrex_manipulator_msg,queue_size=1)
-pub_data=soltrex_manipulator_msg()
-rate=rospy.Rate(40)
+        link_lengths = [232.5, 235.0, 230.0, 40.0]
+        self.robot = RRRR_manipulator(link_lengths)
+        
+        rospy.init_node('Robot_teleop_node',log_level=rospy.INFO)
+        rospy.Subscriber('/turtle1/cmd_vel',Twist,self.callback)
+        rospy.spin()
 
-p0=np.array([300,0,300,np.deg2rad(-55)])
+    def callback(self,msg):
+        [lx, ly, lz] = [msg.linear.x, msg.linear.y, msg.linear.z]
+        [wx, wy, wz] = [msg.angular.x, msg.angular.y, msg.angular.z]
 
-def RRRR_update_pos_callback(msg):
-    [lx, ly, lz] = [msg.linear.x, msg.linear.y, msg.linear.z]
-    [wx, wy, wz] = [msg.angular.x, msg.angular.y, msg.angular.z]
-
-    C1=1/100
-    C2=1/100
-
-    dp=np.array([C1*lx, C1*ly, C1*lz, C2*wz])
-    p=p0+dp
-    p0=p
-    
-    t = robot.set_cartesian_position(p)
-    pub_data.joint_RPOS=[t[0], t[1], t[2], 0, t[3]]
-    pub.publish(pub_data)
-    
-    rate.sleep()
-
-    
-
-    return
-
-def pubsub():
-    rospy.init_node('Robot_teleop_node')
-    rospy.Subscriber('/turtle1/cmd_vel',Twist,RRRR_update_pos_callback)
-    rospy.spin()
-
+        dp=np.array([self.c1*lx, self.c1*ly, self.c1*wz, self.c2*lz])
+        self.p=self.p+dp
+        t = self.robot.set_cartesian_position(self.p)
+        
+        rospy.loginfo(self.p)
+        
+        pub_data=soltrex_manipulator_msg()
+        pub_data.joint_RPOS=[t[0], t[1], t[2], 0, t[3]]
+        self.pub.publish(pub_data)
 
 if __name__ == '__main__':
-    pubsub()
+
+    p0=np.array([350,0,300,np.deg2rad(-55)])
+    teleop_robot=cmd_vel_sub(p0,1/1,1/150)
