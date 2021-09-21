@@ -6,7 +6,7 @@
         <param  name="baud"             type="int"                  value="57600"/>
     </node>
 
-    <node name="RRRR_kinematics_publisher"   pkg="soltrex_poc_ros"   type = "RRRR_Robot_control_N1.py"   output="screen">
+    <node name="RRRR_teleop_publisher"   pkg="soltrex_poc_ros"   type = "RRRR_teleop_control_N1.py"   output="screen">
     </node>
 
 </launch>
