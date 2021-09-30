@@ -1,0 +1,11 @@
+<launch>
+
+    <node name="RRRR_control_publisher"   pkg="soltrex_poc_ros"   type = "RRRR_teleop_control_N1.py">
+    </node>
+
+    <node name="keyboard_teleop_node"   pkg="soltrex_poc_ros"   type = "teleop_keyboard.py"   output="screen">
+    </node>
+
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(soltrex_poc_ros)/rviz/rplidar.rviz" />
+
+</launch>

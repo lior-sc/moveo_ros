@@ -1,0 +1,17 @@
+<launch>
+
+    <!-- This section launches the rosserial arduino node -->
+    <node   name="arduino_rosserial_node"      pkg="rosserial_arduino"     type="serial_node.py">
+        <param  name="port"             type="string"               value="/dev/ttyUSB1"/>
+        <param  name="baud"             type="int"                  value="57600"/>
+    </node>
+
+    <node name="rplidarNode"          pkg="rplidar_ros"  type="rplidarNode" output="screen">
+        <param name="serial_port"         type="string" value="/dev/ttyUSB0"/>
+        <param name="serial_baudrate"     type="int"    value="115200"/>
+        <param name="frame_id"            type="string" value="laser"/>
+        <param name="inverted"            type="bool"   value="false"/>
+        <param name="angle_compensate"    type="bool"   value="true"/>
+    </node>
+
+</launch>
