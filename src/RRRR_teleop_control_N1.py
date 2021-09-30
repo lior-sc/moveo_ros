@@ -4,7 +4,7 @@ import numpy as np
 import sympy as sp
 
 import rospy
-from rospy.core import rospyinfo
+# from rospy.core import rospyinfo
 from soltrex_poc_ros.msg import soltrex_manipulator_msg
 from geometry_msgs.msg import Twist
 
@@ -124,14 +124,14 @@ class cmd_vel_sub:
         self.robot = RRRR_manipulator(link_lengths)
         
         rospy.init_node('Robot_teleop_node',log_level=rospy.INFO)
-        rospy.Subscriber('/turtle1/cmd_vel',Twist,self.callback)
+        rospy.Subscriber('/cmd_vel',Twist,self.callback)
         rospy.spin()
 
     def callback(self,msg):
         [lx, ly, lz] = [msg.linear.x, msg.linear.y, msg.linear.z]
         [wx, wy, wz] = [msg.angular.x, msg.angular.y, msg.angular.z]
 
-        dp=np.array([self.c1*lx, self.c1*ly, self.c1*wz, self.c2*lz])
+        dp=np.array([self.c1*lx, self.c1*ly, self.c1*lz, self.c2*wz])
         self.p=self.p+dp
         t = self.robot.set_cartesian_position(self.p)
         
@@ -142,6 +142,5 @@ class cmd_vel_sub:
         self.pub.publish(pub_data)
 
 if __name__ == '__main__':
-
     p0=np.array([350,0,300,np.deg2rad(-55)])
     teleop_robot=cmd_vel_sub(p0,1/1,1/150)
