@@ -2,7 +2,7 @@
 
     <!-- This section launches the rosserial arduino node -->
     <node   name="arduino_rosserial_node"      pkg="rosserial_arduino"     type="serial_node.py"    output="screen">
-        <param  name="port"             type="string"               value="/dev/ttyUSB1"/>
+        <param  name="port"             type="string"               value="/dev/ttyUSB0"/>
         <param  name="baud"             type="int"                  value="57600"/>
     </node>
 
