@@ -130,7 +130,7 @@ def publisher_main_function():
         positions=np.zeros([222,4])
 
         p=np.array([300,0,300,np.deg2rad(-55)])
-        dp=np.array([1,-1,0,0])
+        dp=np.array([1,0,0,0])
 
         for i in range(1,101):
             p=p+dp
