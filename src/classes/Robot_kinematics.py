@@ -70,7 +70,7 @@ class RRRR_manipulator:
         t=[t1, t2, t3, t4]
         return t
     
-    def set_joint_position_deg(self, t):
+    def update_robot_state(self, t):
 
         # update robot state variables
         t_rad=np.deg2rad(t)
@@ -79,8 +79,6 @@ class RRRR_manipulator:
         self.JPOS=t_rad
         self.POS = cartesian_state['position']
         self.ROT = cartesian_state['rotation']
-
-        return t_rad
     
     def get_cartesian_state(self,t):
         At = self.FK(t[0],t[1], t[2], t[3])
@@ -89,7 +87,7 @@ class RRRR_manipulator:
 
         return {'position':pos, 'rotation':rot}
 
-    def set_cartesian_position(self, p):
+    def get_IK_angles(self, p):
 
         try:
             t1= self.IK[0](p[0], p[1], p[2], p[3])
