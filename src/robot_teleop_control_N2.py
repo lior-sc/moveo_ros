@@ -13,6 +13,10 @@ class robot_teleop_subscriber:
         link_lengths = [232.5, 235.0, 230.0, 40.0]
         self.robot = RRRR_manipulator(link_lengths)
 
+        # set starting position
+        p0 = np.array([350,0,300,np.deg2rad(-55)])
+        self.p = p0
+
         #initialize node, subscriber and publisher
         rospy.init_node('Robot_teleop_node',log_level=rospy.INFO)
         rospy.Subscriber('/cmd_vel',Twist,self.callback)
@@ -20,8 +24,6 @@ class robot_teleop_subscriber:
         rospy.sleep(1)
 
         #set robot starting position and publish once to get there
-        p0 = np.array([350,0,300,np.deg2rad(-55)])
-        self.p = p0
         self.send_to_p0()
 
     def send_to_p0(self):
@@ -42,7 +44,7 @@ class robot_teleop_subscriber:
         # get & calculate location increment
         c1 = 1/1
         c2 = 1/150
-        dp=np.array([c1*lx, c1*ly, c1*lz, c2*wz])
+        dp = np.array([c1*lx, c1*ly, c1*lz, c2*wz])
         self.p = self.p+dp
         t = self.robot.get_IK_angles(self.p)
         
