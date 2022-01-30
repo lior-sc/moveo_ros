@@ -45,9 +45,6 @@ class LSA:
         return p
     
     def kmeans_clustering(self,scan,max_clusters):
-        # # reshape input vector if necessary
-        # if(np.argmax(np.shape(P))>0):
-        #     P=P.T
         P=self.convert_to_cartesian_coordinates(scan)
         P=P.T
 
