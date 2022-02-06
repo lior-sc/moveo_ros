@@ -4,8 +4,8 @@ import numpy as np
 import copy                           #https://answers.ros.org/question/37682/python-deep-copy-of-ros-message/
 
 from sklearn import cluster as skc
-import pandas as pd
-from matplotlib import pyplot as plt
+# import pandas as pd
+# from matplotlib import pyplot as plt
 from sensor_msgs.msg import LaserScan
 
 class LSA:
